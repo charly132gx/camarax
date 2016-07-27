@@ -1,78 +1,43 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
 <head>
-<meta charset="utf-8">
-<title>Cámara</title>
-<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-<link href="themes/tema-personalizado.min.css" rel="stylesheet" type="text/css">
-<link href="jquery.mobile-1.4.0/jquery.mobile.icons-1.4.0.min.css" rel="stylesheet" type="text/css">
-<link href="jquery.mobile-1.4.0/jquery.mobile.structure-1.4.0.min.css" rel="stylesheet" type="text/css">
-<script src="jquery.mobile-1.4.0/jquery-1.10.2.min.js" type="text/javascript"></script>
+<link href="css/jquery.mobile-1.4.5.css" rel="stylesheet" />
+<link href="css/jquery.mobile.theme-1.4.5.css" rel="stylesheet" />
+<link href="css/jquery.mobile.structure-1.4.5.css" rel="stylesheet" />
+<script src="cordova.js"></script>
+<script src="js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+<script src="js/jquery.mobile-1.4.5.js" type="text/javascript"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript">
-$( document ).on( "mobileinit", function() {
-  $.mobile.pageLoadErrorMessage = "Error al cargar la página";
-  $.mobile.pageLoadErrorMessageTheme = "a";
-});
+document.addEventListener("deviceready",function(){
+	$("#btnTomarFoto").tap(function (){//Capturar fotografia
+		navigator.device.capture.captureImage(function(mediaFiles){
+		path = mediaFiles[0].fullPath;
+		$('#regFoto').append('<br><img id="imagen" src="'+path+'" width="100%" />').attr('rel',path);
+		},function(error){
+				navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+		},{limit:1});
+	  });
+	},false);
 </script>
-<script src="jquery.mobile-1.4.0/jquery.mobile-1.4.0.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-var origenImagen;
-var formatoDestino;
-document.addEventListener("deviceready", onDeviceReady, false);
-function onDeviceReady() {
-    console.log(" ****	Dispositivo Listo	**** ");
-	origenImagen=navigator.camera.PictureSourceType;
-    formatoDestino=navigator.camera.DestinationType;
-}
-</script>
+<style type="text/css">
+	p{
+		text-align:center;
+	}
+</style>
 </head>
 
 <body>
-<div data-role="page" id="camara" data-theme="a" >
-<script type="text/javascript">
-function capturaExitosa(datosImagen){
-	$("#imagen").css("display","block");
-	$("#imagen").attr("src","data:image/jpeg;base64," + datosImagen);
-	}
-
-function obtenerFoto(URIimagen){
-	$("#imagen").css("display","block");
-	$("#imagen").attr("src",URIimagen);
-	}
-function errorCamara(msj){
-	$("#error").append('<p>error: </p>' + msj);
-	}
-
-function capturarFoto(){
-	navigator.camera.getPicture(capturaExitosa,errorCamara, { quality: 50,
-        destinationType: formatoDestino.DATA_URL });
-	}
-
-function capturarFotoEditable(){
-	navigator.camera.getPicture(capturaExitosa,errorCamara, { quality: 50, allowEdit : true,
-        destinationType: formatoDestino.DATA_URL });
-	}
-
-function obtenerFotoArchivo( origen ){
-	navigator.camera.getPicture(obtenerFoto,errorCamara,{ quality: 50,
-        destinationType: formatoDestino.FILE_URI,
-        sourceType: origen });
-	}
-</script>
-  <div data-role="header">
-    <h1>Cámara</h1>
-  </div>
-  <div data-role="content">
-  <img id="imagen" src="" style="display:none;width:100px;height:100px;">
-  <div data-inline="true">
-    <button data-inline="true" onClick="capturarFoto();">Capturar Foto</button>
-    <button data-inline="true" onClick="capturarFotoEditable();">Capturar Foto Editable</button>
-    <button data-inline="true" onClick="obtenerFotoArchivo(origenImagen.PHOTOLIBRARY);">Obtener de la Librería</button>
-    <button data-inline="true" onClick="obtenerFotoArchivo(origenImagen.SAVEDPHOTOALBUM);">Obtener de un Albúm</button>
-  </div>
-
-  <div id="error"></div>
-   </div>
+<div data-role="page" id="principal" data-theme="b">
+	<div data-role="header">
+    	<p>Capturar fotografía</p>
+    </div>
+    <div data-role="content">
+			<input type="button" id="btnTomarFoto" value="Tomar Foto" >
+		  <div id="regFoto"></div>
+    </div>
+    <div data-role="footer" data-position="fixed">
+    	<p>Pie de aplicación</p>
+    </div>
 </div>
 </body>
 </html>
